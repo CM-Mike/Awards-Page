@@ -27,7 +27,8 @@ class NominationController extends Controller
     {
         $nominees = Nominee::withCount('nominations')->get()->sortByDesc('nominations_count');
 
-        return view('nominations.index', compact('nominees'));
+        // FIXED: Changed from 'nominations.index' to 'events.nomination'
+        return view('events.nomination', compact('nominees'));
     }
 
     /**
@@ -114,22 +115,15 @@ class NominationController extends Controller
     public function processPayment(Request $request, $nominee_id)
     {
         $request->validate([
-            'phone' => 'required|regex:/^\+2547\d{8}$/',
+            // Validates Kenyan phone format: +2547XXXXXXXX or +2541XXXXXXXX
+            'phone' => 'required|regex:/^\+254[17]\d{8}$/',
         ]);
 
         $nominee = Nomination::findOrFail($nominee_id);
         $phone = $request->phone;
         $amount = 10; // KSh 10 per extra nomination
 
-        // TODO: Integrate Safaricom M-Pesa STK Push API
-        // Example pseudo-code:
-        // $response = Mpesa::stkPush([
-        //     'phone' => $phone,
-        //     'amount' => $amount,
-        //     'account_reference' => 'Nomination',
-        //     'transaction_desc' => "Extra nomination for {$nominee->name}",
-        //     'callback_url' => route('mpesa.callback'),
-        // ]);
+        // TODO: Integrate Safaricom M-Pesa STK Push API here
 
         // Increment nomination count after initiating payment
         $nominee->increment('nomination_count');

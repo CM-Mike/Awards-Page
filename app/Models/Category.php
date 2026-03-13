@@ -3,25 +3,43 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Category extends Model
 {
-    protected $fillable = ['name'];
+    // Updated to include slug and icon for your awards setup
+    protected $fillable = ['name', 'slug', 'icon', 'description', 'event_id'];
 
-    // Relationship to votes
-    public function votes()
+    /**
+     * Relationship to Subcategories
+     * This fixes the RelationNotFoundException
+     */
+    public function subcategories(): HasMany
     {
-        return $this->hasMany(Vote::class);
+        return $this->hasMany(Subcategory::class);
     }
 
-    // Relationship to nominees
-    public function nominees()
+    /**
+     * Relationship to Nominees
+     */
+    public function nominees(): HasMany
     {
         return $this->hasMany(Nominee::class);
     }
 
-   
-    public function event()
+    /**
+     * Relationship to Votes
+     */
+    public function votes(): HasMany
+    {
+        return $this->hasMany(Vote::class);
+    }
+
+    /**
+     * Relationship to Event
+     */
+    public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class); 
     }
