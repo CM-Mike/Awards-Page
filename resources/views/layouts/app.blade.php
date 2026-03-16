@@ -114,7 +114,7 @@
             </div>
             <div>
                 <h4 class="text-black text-[10px] font-black uppercase tracking-widest mb-8">Contact</h4>
-                <p class="text-slate-400 text-sm font-semibold leading-loose">Nairobi, Kenya<br>Thika Road, MKU</p>
+                <p class="text-slate-400 text-sm font-semibold leading-loose">Nairobi, Kenya<br></p>
             </div>
         </div>
     </div>

@@ -3,64 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
+    <title>Admin Login | Awards Luminous</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { 
+            background-color: #FDFCF7; /* Soft Cream */
+            background-image: radial-gradient(circle at 20% 30%, rgba(197, 160, 89, 0.05) 0%, transparent 40%),
+                              radial-gradient(circle at 80% 70%, rgba(197, 160, 89, 0.08) 0%, transparent 40%);
+            font-family: 'Poppins', sans-serif; 
+        }
+        .iridescent-glass {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            box-shadow: 0 10px 30px -10px rgba(197, 160, 89, 0.15);
+        }
+    </style>
 </head>
-<body class="bg-white min-h-screen flex items-center justify-center font-poppins">
+<body class="min-h-screen flex items-center justify-center p-6">
 
-    <div class="glass p-10 rounded-2xl shadow-xl w-full max-w-md">
-        <h1 class="text-3xl font-bold text-black mb-8 text-center">Admin Login</h1>
+    <div class="iridescent-glass p-12 rounded-[2.5rem] w-full max-w-md border border-[#C5A059]/10">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-light tracking-widest text-[#C5A059] uppercase">
+                AWARDS
+            </h1>
+            <div class="h-[1px] w-12 bg-[#C5A059]/30 mx-auto mt-4"></div>
+            <p class="text-slate-400 text-[9px] tracking-[0.4em] uppercase mt-4">Luminous Edition</p>
+        </div>
 
         @if(session('error'))
-            <div class="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+            <div class="bg-red-50 text-red-500 border border-red-100 px-4 py-3 rounded-xl mb-6 text-xs text-center">
                 {{ session('error') }}
             </div>
         @endif
 
-        <form action="{{ route('admin.login.submit') }}" method="POST" class="space-y-6">
+        <form action="{{ route('admin.login.submit') }}" method="POST" class="space-y-8">
             @csrf
 
-            <!-- Email -->
-            <div>
-                <label for="email" class="block text-black font-medium mb-2">Email</label>
+            <div class="space-y-2">
+                <label for="email" class="block text-[#C5A059] text-[10px] font-bold uppercase tracking-widest ml-1">Official Email</label>
                 <input type="email" name="email" id="email" required
-                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                    class="w-full px-5 py-4 rounded-2xl bg-white/40 border border-[#C5A059]/20 focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/5 focus:outline-none transition-all placeholder-slate-300 text-slate-700"
+                    placeholder="admin@awards.com">
             </div>
 
-            <!-- Password -->
-            <div>
-                <label for="password" class="block text-black font-medium mb-2">Password</label>
+            <div class="space-y-2">
+                <label for="password" class="block text-[#C5A059] text-[10px] font-bold uppercase tracking-widest ml-1">Security Key</label>
                 <input type="password" name="password" id="password" required
-                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none">
-            </div>
-
-            <!-- Remember Me -->
-            <div class="flex items-center">
-                <input type="checkbox" name="remember" id="remember" class="mr-2">
-                <label for="remember" class="text-black">Remember Me</label>
+                    class="w-full px-5 py-4 rounded-2xl bg-white/40 border border-[#C5A059]/20 focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/5 focus:outline-none transition-all placeholder-slate-300 text-slate-700"
+                    placeholder="••••••••">
             </div>
 
             <button type="submit"
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-lg transition">
-                Login
+                class="w-full bg-[#C5A059] hover:bg-[#B38F4D] text-[#FDFCF7] font-semibold py-4 rounded-2xl shadow-xl shadow-[#C5A059]/20 transition-all hover:translate-y-[-2px] active:scale-95 uppercase tracking-widest text-xs">
+                Enter Portal
             </button>
         </form>
 
-        <p class="text-center text-gray-600 mt-6">
-            &copy; {{ date('Y') }} Awards Admin Panel
-        </p>
+        <div class="mt-12 pt-8 border-t border-[#C5A059]/10 text-center">
+            <p class="text-slate-400 text-[9px] tracking-[0.2em] uppercase">
+                &copy; {{ date('Y') }} Prestige Management
+            </p>
+        </div>
     </div>
-
-    <!-- Glassmorphism CSS -->
-    <style>
-        .glass {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-    </style>
 
 </body>
 </html>

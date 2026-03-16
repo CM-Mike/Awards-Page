@@ -1,104 +1,31 @@
 @extends('admin.layout.app')
 
 @section('content')
+<div class="max-w-2xl mx-auto py-20">
+    <div class="text-center mb-16">
+        <h1 class="text-4xl font-extralight tracking-tighter text-slate-800">Create Category</h1>
+        <p class="text-[10px] text-[#C5A059] uppercase tracking-[0.5em] mt-4 font-bold">Define a new segment of excellence</p>
+    </div>
 
-<h1 class="text-2xl text-black mb-6">Add New Category</h1>
+    <div class="bg-white/60 backdrop-blur-2xl p-12 rounded-[3rem] border border-[#C5A059]/10 shadow-2xl shadow-[#C5A059]/5">
+        <form action="{{ route('admin.categories.store') }}" method="POST" class="space-y-10">
+            @csrf
+            
+            <div class="relative group">
+                <label class="block text-[9px] font-bold text-[#C5A059] uppercase tracking-[0.3em] mb-3 ml-2">Category Identity</label>
+                <input type="text" name="name" placeholder="e.g. Innovator of the Year" required
+                    class="w-full bg-[#FDFCF7]/50 border-b border-[#C5A059]/20 py-4 px-2 focus:border-[#C5A059] focus:outline-none transition-all text-lg font-light text-slate-700 placeholder:text-slate-200">
+            </div>
 
-<div class="glass-card">
-
-    <form action="{{ route('admin.categories.store') }}" method="POST">
-        @csrf
-
-        <div class="form-group">
-            <label for="name">Category Name</label>
-            <input type="text" name="name" id="name" placeholder="Enter category name" required>
-        </div>
-
-        <div class="form-group">
-            <label for="event_id">Event</label>
-            <select name="event_id" id="event_id" required>
-                <option value="">Select Event</option>
-                @foreach($events as $event)
-                    <option value="{{ $event->id }}">{{ $event->name }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="button-group">
-            <button type="submit" class="submit-btn">Save Category</button>
-            <a href="{{ route('admin.categories.index') }}" class="back-btn">Back</a>
-        </div>
-
-    </form>
-
+            <div class="pt-6">
+                <button type="submit" class="w-full py-5 bg-gradient-to-r from-[#C5A059] to-[#B38F4D] text-[#FDFCF7] rounded-2xl text-[10px] font-bold uppercase tracking-[0.4em] shadow-xl shadow-[#C5A059]/20 hover:scale-[1.02] transition-all active:scale-95">
+                    Confirm & Publish
+                </button>
+                <a href="{{ route('admin.categories') }}" class="block text-center mt-6 text-[9px] uppercase tracking-widest text-slate-400 hover:text-slate-600 transition">
+                    Return to Library
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
-
-@endsection
-
-@section('styles')
-<style>
-/* Glass Card */
-.glass-card{
-    backdrop-filter: blur(20px);
-    background: rgba(255,255,255,0.15);
-    border-radius: 15px;
-    padding:25px;
-    border:1px solid rgba(255,255,255,0.2);
-    max-width:500px;
-    margin:auto;
-}
-
-/* Form groups */
-.form-group{
-    margin-bottom:20px;
-    display:flex;
-    flex-direction:column;
-}
-
-.form-group label{
-    margin-bottom:8px;
-    font-weight:600;
-}
-
-.form-group input,
-.form-group select{
-    padding:10px 15px;
-    border-radius:8px;
-    border:none;
-    outline:none;
-    background: rgba(255,255,255,0.2);
-    color: #000;
-}
-
-/* Buttons */
-.button-group{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-}
-
-.submit-btn{
-    background:#0d6efd;
-    color:white;
-    padding:10px 18px;
-    border-radius:8px;
-    border:none;
-    cursor:pointer;
-}
-
-.back-btn{
-    background:#6c757d;
-    color:white;
-    padding:10px 18px;
-    border-radius:8px;
-    text-decoration:none;
-}
-
-/* Responsive */
-@media(max-width:480px){
-    .button-group{
-        flex-direction:column;
-    }
-}
-</style>
 @endsection

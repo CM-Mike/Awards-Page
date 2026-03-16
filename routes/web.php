@@ -42,13 +42,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::put('/events/{event}', [AdminEventController::class, 'update'])->name('events.update');
     Route::delete('/events/{event}', [AdminEventController::class, 'destroy'])->name('events.destroy');
 
-    // Categories Management
-    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    // Categories Management (Fixed Name for Sidebar)
+    Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
     Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
 
-    // Nominees Management
-    Route::get('/nominees', [AdminNomineeController::class, 'index'])->name('nominees.index');
+    // Nominees Management (Fixed Name for Sidebar)
+    Route::get('/nominees', [AdminNomineeController::class, 'index'])->name('nominees');
     Route::post('/nominees', [AdminNomineeController::class, 'store'])->name('nominees.store');
     Route::delete('/nominees/{id}', [AdminNomineeController::class, 'destroy'])->name('nominees.destroy');
 
@@ -69,14 +69,14 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 Route::get('/', [EventController::class, 'home'])->name('home');
 Route::get('/home', [EventController::class, 'home']);
 
-// THE MISSING LINK: Public Categories Page
+// Public Categories Page
 Route::get('/categories', [EventController::class, 'categoriesPage'])->name('categories.index');
 
 // Events
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
 Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
 
-// About & Contact
+// About & Contact (FIXED: Using Route::view for static views)
 Route::view('/about', 'events.about')->name('about');
 Route::view('/contact', 'events.contact')->name('contact');
 

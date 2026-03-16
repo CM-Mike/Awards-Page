@@ -2,50 +2,33 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Nomination;
-
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Nominee extends Model
 {
-     protected $fillable = [
-    'nominee_type',
-    'name',
-    'email',
-    'phone',
-    'category',
-    'reason',
-    'image',
-    'nomination_count'
-];
-   public function index() {
-    // Fetch nominations with nominee info
-    $nominations = Nomination::orderBy('created_at', 'desc')->paginate(10);
+    protected $fillable = [
+        'name', 
+        'category_id', 
+        'sub_category_id', 
+        'social_handle', 
+        'reason', 
+        'image'
+    ];
 
-    return view('admin.nominees.index', compact('nominations'));
-}
-    // Relation to Category
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    // Relation to Event
-    public function event()
+    public function subCategory(): BelongsTo
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(SubCategory::class);
     }
 
-    // Relation to Votes
-    public function votes()
+    public function nominations(): HasMany
     {
-         return $this->hasMany(Vote::class);
+        return $this->hasMany(Nomination::class);
     }
-    public function nominations()
-{
-    return $this->hasMany(Nomination::class);
-}
-
-
 }

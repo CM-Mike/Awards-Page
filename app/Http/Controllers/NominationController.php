@@ -3,132 +3,65 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Nomination;
-use App\Models\Nominee;
+use App\Models\{Nomination, Nominee, Category, SubCategory};
 use Illuminate\Support\Carbon;
 
 class NominationController extends Controller
 {
-    /**
-     * Show the nomination form with nominees
-     */
+    public function index() { return $this->create(); }
+
     public function create()
     {
-        // Get nominees with nomination counts to show on the nomination page
-        $nominees = Nominee::withCount('nominations')->get()->sortByDesc('nominations_count');
-
-        return view('events.nomination', compact('nominees'));
+        $categories = Category::with('subCategories')->orderBy('name', 'asc')->get();
+        // Get trending nominees for the bottom spotlight
+        $nominees = Nominee::withCount('nominations')->orderByDesc('nominations_count')->take(4)->get();
+        
+        return view('events.nomination', compact('categories', 'nominees'));
     }
 
-    /**
-     * Show all nominees (index page)
-     */
-    public function index()
-    {
-        $nominees = Nominee::withCount('nominations')->get()->sortByDesc('nominations_count');
-
-        // FIXED: Changed from 'nominations.index' to 'events.nomination'
-        return view('events.nomination', compact('nominees'));
-    }
-
-    /**
-     * Store a new nomination
-     */
     public function store(Request $request)
     {
         $request->validate([
-            'nominee_type' => 'required',
-            'name' => 'required',
-            'category' => 'required',
-            'reason' => 'required',
+            'name'            => 'required|string|max:255',
+            'category_id'     => 'required|exists:categories,id',
+            'sub_category_id' => 'required|exists:sub_categories,id',
+            'social_handle'   => 'required|string',
+            'reason'          => 'required|string|min:10',
+            'image'           => 'required|image|max:2048',
         ]);
 
         $now = Carbon::now();
+        $imagePath = $request->file('image')->store('nominees', 'public');
 
-        // Step 1: Create or fetch the nominee record
+        // Create or find the Star
         $nomineeRecord = Nominee::firstOrCreate(
+            ['name' => $request->name, 'sub_category_id' => $request->sub_category_id],
             [
-                'name' => $request->name,
-                'category' => $request->category,
-            ],
-            [
-                'nominee_type' => $request->nominee_type,
-                'image' => $request->hasFile('image') 
-                    ? $request->file('image')->store('nominations', 'public') 
-                    : null,
+                'category_id'   => $request->category_id,
+                'social_handle' => $request->social_handle,
+                'reason'        => $request->reason,
+                'image'         => $imagePath,
             ]
         );
 
-        // Step 2: Check if a nomination already exists
-        $existing = Nomination::where('name', $request->name)
-            ->where('category', $request->category)
-            ->first();
+        $nomination = Nomination::where('nominee_id', $nomineeRecord->id)->first();
 
-        if ($existing) {
-            $lastFree = $existing->last_free_nomination;
-
-            if (!$lastFree || $now->diffInHours($lastFree) >= 24) {
-                // First free nomination today
-                $existing->increment('nomination_count');
-                $existing->update(['last_free_nomination' => $now]);
-
-                return redirect()->route('nomination.create')
-                    ->with('success', 'Nomination submitted successfully! (Free for today)');
+        if ($nomination) {
+            if (!$nomination->last_free_nomination || $now->diffInHours($nomination->last_free_nomination) >= 24) {
+                $nomination->increment('nomination_count');
+                $nomination->update(['last_free_nomination' => $now]);
+                return redirect()->back()->with('success', 'Daily free nomination recorded!');
             } else {
-                // Extra nomination → redirect to payment
-                return redirect()->route('nomination.pay', [
-                    'nominee_id' => $existing->id
-                ])->with('info', 'First nomination is free today. Extra nominations cost KSh 10.');
+                return redirect()->route('nomination.pay', ['nominee_id' => $nomination->id]);
             }
         } else {
-            // First nomination ever → create in nominations table
             Nomination::create([
-                'nominee_id' => $nomineeRecord->id, // Link to nominee
-                'nominee_type' => $request->nominee_type,
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'category' => $request->category,
-                'reason' => $request->reason,
-                'image' => $nomineeRecord->image,
+                'nominee_id' => $nomineeRecord->id,
+                'category_id' => $request->category_id,
                 'nomination_count' => 1,
                 'last_free_nomination' => $now,
             ]);
-
-            return redirect()->route('nomination.create')
-                ->with('success', 'Nomination submitted successfully! (Free)');
+            return redirect()->back()->with('success', 'Nomination submitted!');
         }
-    }
-
-    /**
-     * Show payment page for extra nominations
-     */
-    public function pay(Request $request, $nominee_id)
-    {
-        $nominee = Nomination::findOrFail($nominee_id);
-        return view('events.pay_nomination', compact('nominee'));
-    }
-
-    /**
-     * Process M-Pesa payment for extra nominations
-     */
-    public function processPayment(Request $request, $nominee_id)
-    {
-        $request->validate([
-            // Validates Kenyan phone format: +2547XXXXXXXX or +2541XXXXXXXX
-            'phone' => 'required|regex:/^\+254[17]\d{8}$/',
-        ]);
-
-        $nominee = Nomination::findOrFail($nominee_id);
-        $phone = $request->phone;
-        $amount = 10; // KSh 10 per extra nomination
-
-        // TODO: Integrate Safaricom M-Pesa STK Push API here
-
-        // Increment nomination count after initiating payment
-        $nominee->increment('nomination_count');
-
-        return redirect()->route('nomination.create')
-            ->with('success', "Payment of KSh $amount initiated! Complete the M-Pesa prompt on your phone.");
     }
 }
