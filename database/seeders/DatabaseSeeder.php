@@ -30,5 +30,10 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
             'role'  => 'user',
         ]);
+        
+        // ────────────────────────────────────────────────
+    // Add this line to call your CategorySeeder
+    $this->call(CategorySeeder::class);
+    // You can add more seeders later in the same way
     }
 }
