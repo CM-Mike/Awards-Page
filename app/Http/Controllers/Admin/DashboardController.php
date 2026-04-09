@@ -1,29 +1,43 @@
 <?php
 
-namespace App\Http\Controllers\Admin; // This must match the folder path exactly
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Event, Category, Nominee, Vote};
+use App\Models\Category;
+use App\Models\Nominee;
+use App\Models\Vote;
+use App\Models\Event;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $events = Event::count();
+        // Basic Statistics
+        $events     = Event::count();
         $categories = Category::count();
-        $nominees = Nominee::count();
-        $votes = Vote::count();
+        $nominees   = Nominee::count();
+        $votes      = Vote::count();
 
-        // Getting the latest activity with counts
-        $latestNominees = Nominee::with('category')->withCount('votes')->latest()->take(5)->get();
+        // TEMPORARY BYPASS - Recent Spotlight
+        // (We removed withCount to stop the error for now)
+        $latestNominees = Nominee::with('category')
+            ->latest()
+            ->take(5)
+            ->get();
 
-        // Data for the Gold Line Chart
-        $categoriesNames = Category::pluck('name')->toArray();
-        $votesPerCategory = Category::withCount('votes')->pluck('votes_count')->toArray();
+        // TEMPORARY BYPASS - Chart Data
+        // (Empty array so the chart doesn't break)
+        $categoriesNames   = Category::pluck('name')->toArray();
+        $votesPerCategory  = [];
 
         return view('admin.dashboard', compact(
-            'events', 'categories', 'nominees', 'votes', 
-            'latestNominees', 'categoriesNames', 'votesPerCategory'
+            'events',
+            'categories',
+            'nominees',
+            'votes',
+            'latestNominees',
+            'categoriesNames',
+            'votesPerCategory'
         ));
     }
 }
