@@ -24,12 +24,12 @@
 
     <section class="relative z-10 pb-32 px-6">
         <div class="max-w-7xl mx-auto">
-            <div class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 
                 @foreach($categories as $category)
-                <div class="break-inside-avoid group relative">
+                <div class="group relative">
                     {{-- Soft Elevation Shadow --}}
-                    <div class="relative bg-white border border-black/5 p-8 rounded-[2rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden">
+                    <div class="relative bg-white border border-black/5 p-8 rounded-[2rem] shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden h-full">
                         
                         {{-- Subtle Gold Accent --}}
                         <div class="absolute top-0 right-0 w-24 h-24 bg-gold/5 rounded-bl-full translate-x-12 -translate-y-12 group-hover:translate-x-8 group-hover:-translate-y-8 transition-all duration-700"></div>
@@ -49,7 +49,7 @@
                         </div>
 
                         {{-- Award Links --}}
-                        <div class="space-y-3">
+                        <div class="space-y-3 flex-grow">
                             @forelse($category->subcategories as $sub)
                             <a href="{{ route('nominate', $category->slug) }}" 
                                class="group/item flex items-center justify-between p-4 rounded-xl bg-[#FDFCF7] border border-black/[0.03] hover:border-gold/30 hover:bg-white transition-all">
